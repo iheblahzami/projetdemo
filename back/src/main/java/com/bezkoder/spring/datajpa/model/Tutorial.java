@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tutorials")
+
 public class Tutorial {
 
 	@Id
@@ -27,6 +28,9 @@ public class Tutorial {
 		this.title = title;
 		this.description = description;
 		this.published = published;
+	}
+
+	public Tutorial(long l, String testTitle, String testDescription, boolean b) {
 	}
 
 	public long getId() {
@@ -61,5 +65,8 @@ public class Tutorial {
 	public String toString() {
 		return "Tutorial [id=" + id + ", title=" + title + ", desc=" + description + ", published=" + published + "]";
 	}
-
+	// Add this method
+	public void setId(long id) {
+		this.id = id;
+	}
 }
