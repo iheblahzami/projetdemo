@@ -17,7 +17,7 @@ export class TutorialDetailsComponent implements OnInit {
     description: '',
     published: false
   };
-  
+
   message = '';
 
   constructor(
@@ -26,11 +26,16 @@ export class TutorialDetailsComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      const id = params['id'];
+      // Fetch tutorial details using the id
+    });
     if (!this.viewMode) {
       this.message = '';
       this.getTutorial(this.route.snapshot.params["id"]);
     }
-  }
+
+  };
 
   getTutorial(id: string): void {
     this.tutorialService.get(id)
