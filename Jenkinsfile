@@ -1,93 +1,112 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'GIT_REPO', defaultValue: 'https://github.com/iheblahzami/projetdemo.git', description: 'Git Repository URL')
+    }
+
+    environment {
+        FRONTEND_DIR = 'front'
+        BACKEND_DIR = 'back'
+    }
+
     stages {
-        // Stage 1: Checkout code from Git
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/iheblahzami/projetdemo.git'
+                script {
+                    try {
+                        git branch: 'master', url: params.GIT_REPO
+                    } catch (Exception e) {
+                        error "Git checkout failed: ${e.message}"
+                    }
+                }
             }
         }
 
-        // Stage 2: Build Angular frontend
         stage('Build Angular Frontend') {
             steps {
                 script {
-                    dir('front') {  // Navigate to the Angular frontend directory
-                        sh 'npm install' // Install Angular dependencies
-                        sh 'npm run build -- --prod' // Build Angular for production
+                    dir(FRONTEND_DIR) {
+                        try {
+                            sh 'npm install --cache .npm' // Caching dependencies
+                            sh 'npm run build -- --prod --no-daemon'
+                        } catch (Exception e) {
+                            error "Frontend build failed: ${e.message}"
+                        }
                     }
                 }
             }
         }
 
-        // Stage 3: Build Spring Boot backend
         stage('Build Spring Boot Backend') {
             steps {
                 script {
-                    dir('back') { // Navigate to the Spring Boot backend directory
-                        sh './mvnw clean package' // Build Spring Boot application using Maven wrapper
+                    dir(BACKEND_DIR) {
+                        try {
+                            sh './mvnw clean package'
+                        } catch (Exception e) {
+                            error "Backend build failed: ${e.message}"
+                        }
                     }
                 }
             }
         }
 
-        // Stage 4: Run unit tests
         stage('Run Unit Tests') {
             steps {
                 script {
-                    // Run Angular unit tests
-                    dir('front') {
-                        sh 'npm test -- --watch=false --browsers=ChromeHeadless' // Run Angular unit tests in headless mode
-                    }
-                    // Run Spring Boot unit tests
-                    dir('back') {
-                        sh './mvnw test' // Run Spring Boot unit tests using Maven wrapper
+                    try {
+                        dir(FRONTEND_DIR) {
+                            sh 'npm test -- --watch=false --browsers=ChromeHeadless'
+                        }
+                        dir(BACKEND_DIR) {
+                            sh './mvnw test'
+                        }
+                    } catch (Exception e) {
+                        error "Unit tests failed: ${e.message}"
                     }
                 }
             }
         }
 
-        // Stage 5: Build and run Docker Compose
         stage('Docker Compose Build and Run') {
             steps {
                 script {
-                    // Ensure Docker Compose is installed
-                    sh 'docker-compose --version'
-
-                    // Build and start containers using Docker Compose
                     try {
+                        sh 'docker-compose --version'
                         sh 'docker-compose up -d --build'
                     } catch (Exception e) {
-                        echo 'Failed to start Docker Compose: ${e.message}'
-                        throw e // Fail the pipeline if Docker Compose fails
+                        error "Docker Compose failed: ${e.message}"
                     }
                 }
             }
         }
 
-        // Stage 6: Run Integration Tests (Optional)
         stage('Run Integration Tests') {
             steps {
                 script {
-                    // Run integration tests against the running containers
-                    sh './run-integration-tests.sh' // Replace with your integration test command
+                    try {
+                        sh './run-integration-tests.sh' // Ensure this script exists and is executable
+                    } catch (Exception e) {
+                        error "Integration tests failed: ${e.message}"
+                    }
                 }
             }
         }
 
-        // Stage 7: Stop Docker Compose
         stage('Stop Docker Compose') {
             steps {
                 script {
-                    // Stop and remove containers
-                    sh 'docker-compose down'
+                    try {
+                        sh 'docker-compose down'
+                    } catch (Exception e) {
+                        error "Failed to stop Docker Compose: ${e.message}"
+                    }
                 }
             }
         }
     }
 
-    // Post-build actions
     post {
         success {
             echo 'Pipeline completed successfully!'
