@@ -43,6 +43,7 @@ pipeline {
                 script {
                     dir(BACKEND_DIR) {
                         try {
+                            sh 'chmod +x ./mvnw'
                             sh './mvnw clean package'
                         } catch (Exception e) {
                             error "Backend build failed: ${e.message}"
