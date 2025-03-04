@@ -29,7 +29,7 @@ pipeline {
                     dir(FRONTEND_DIR) {
                         try {
                             sh 'npm install --cache .npm' // Caching dependencies
-                            sh 'npm run build -- --prod --no-daemon'
+                            sh 'npm run build -- --configuration production'
                         } catch (Exception e) {
                             error "Frontend build failed: ${e.message}"
                         }
