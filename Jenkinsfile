@@ -27,7 +27,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh 'docker-compose up -d db' // Start the MySQL container
+                        sh 'docker-compose up -d mysql' // Start the MySQL container
                         sh 'sleep 10' // Wait for the database to initialize
                     } catch (Exception e) {
                         error "Failed to start MySQL database: ${e.message}"
