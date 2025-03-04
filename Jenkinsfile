@@ -22,6 +22,19 @@ pipeline {
                 }
             }
         }
+        // Start MySQL Database
+        stage('Start MySQL Database') {
+            steps {
+                script {
+                    try {
+                        sh 'docker-compose up -d db' // Start the MySQL container
+                        sh 'sleep 10' // Wait for the database to initialize
+                    } catch (Exception e) {
+                        error "Failed to start MySQL database: ${e.message}"
+                    }
+                }
+            }
+        }
 
         stage('Build Angular Frontend') {
             steps {
