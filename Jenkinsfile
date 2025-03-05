@@ -72,7 +72,7 @@ pipeline {
                     try {
                         env.CHROME_BIN = '/snap/bin/chromium'
                         dir(FRONTEND_DIR) {
-                            sh 'npm test -- --watch=false --browsers=ChromeHeadless'
+                            sh 'npm test -- --watch=false '
                         }
                         dir(BACKEND_DIR) {
                             sh './mvnw test'
