@@ -70,6 +70,7 @@ pipeline {
             steps {
                 script {
                     try {
+                        env.CHROME_BIN = '/snap/bin/chromium'
                         dir(FRONTEND_DIR) {
                             sh 'npm test -- --watch=false --browsers=ChromeHeadless'
                         }
