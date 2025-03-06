@@ -66,11 +66,14 @@ pipeline {
             }
         }
 
-        stage('Run Unit Tests') {
+stage('Run Unit Tests') {
+    environment {
+        CHROME_BIN = '/usr/bin/chromium-browser' // Explicitly set Chrome binary for Jenkins
+    }
     steps {
         script {
             try {
-                sh 'export CHROME_BIN=$(which chromium-browser)' // Set Chrome path
+                sh 'echo "Using Chrome binary at: $CHROME_BIN"'
                 dir(FRONTEND_DIR) {
                     sh 'npm test -- --watch=false --browsers=ChromeHeadless'
                 }
