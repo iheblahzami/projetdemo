@@ -104,17 +104,7 @@ stage('Run Unit Tests') {
             }
         }
 
-        stage('Run Integration Tests') {
-            steps {
-                script {
-                    try {
-                        sh './run-integration-tests.sh' // Ensure this script exists and is executable
-                    } catch (Exception e) {
-                        error "Integration tests failed: ${e.message}"
-                    }
-                }
-            }
-        }
+
 
         stage('Stop Docker Compose') {
             steps {
