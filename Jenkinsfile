@@ -70,12 +70,10 @@ pipeline {
     steps {
         script {
             try {
-                sh 'export CHROME_BIN=$(which chromium-browser || which google-chrome || which chrome)' 
-
+                sh 'export CHROME_BIN=$(which chromium-browser)' // Set Chrome path
                 dir(FRONTEND_DIR) {
                     sh 'npm test -- --watch=false --browsers=ChromeHeadless'
                 }
-
                 dir(BACKEND_DIR) {
                     sh './mvnw test'
                 }
@@ -85,6 +83,7 @@ pipeline {
         }
     }
 }
+
 
 
         stage('Docker Compose Build and Run') {
