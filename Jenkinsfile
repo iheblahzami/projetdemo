@@ -67,22 +67,25 @@ pipeline {
         }
 
         stage('Run Unit Tests') {
-            steps {
-                script {
-                    try {
-                        env.CHROME_BIN = '/snap/bin/chromium'
-                        dir(FRONTEND_DIR) {
-                            sh 'npm test -- --watch=false --browsers=ChromeHeadless --no-sandbox'
-                        }
-                        dir(BACKEND_DIR) {
-                            sh './mvnw test'
-                        }
-                    } catch (Exception e) {
-                        error "Unit tests failed: ${e.message}"
-                    }
+    steps {
+        script {
+            try {
+                sh 'export CHROME_BIN=$(which chromium-browser || which google-chrome || which chrome)' 
+
+                dir(FRONTEND_DIR) {
+                    sh 'npm test -- --watch=false --browsers=ChromeHeadless'
                 }
+
+                dir(BACKEND_DIR) {
+                    sh './mvnw test'
+                }
+            } catch (Exception e) {
+                error "Unit tests failed: ${e.message}"
             }
         }
+    }
+}
+
 
         stage('Docker Compose Build and Run') {
             steps {
