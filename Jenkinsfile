@@ -8,6 +8,8 @@ pipeline {
     environment {
         FRONTEND_DIR = 'front'
         BACKEND_DIR = 'back'
+        CHROME_BIN = '/usr/bin/chromium-browser'
+        DOCKER_BUILDKIT = '1'
     }
 
     stages {
