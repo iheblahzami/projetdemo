@@ -10,6 +10,8 @@ pipeline {
         BACKEND_DIR = 'back'
         CHROME_BIN = '/usr/bin/chromium-browser'
         DOCKER_BUILDKIT = '1'
+        SLACK_CHANNEL = 'testdemo' // e.g., #build-notifications
+        SLACK_CREDENTIALS_ID = 'testdemo' // Name of your Slack credential in Jenkins
     }
 
     stages {
@@ -119,16 +121,23 @@ stage('Run Unit Tests') {
         }
     }
 
-    post {
+   post {
         success {
-            echo 'Pipeline completed successfully!'
+            slackSend(
+                channel: env.SLACK_CHANNEL,
+                color: 'good',
+                message: "✅ SUCCESS: Job ${env.JOB_NAME} - Build ${env.BUILD_NUMBER}\nURL: ${env.BUILD_URL}"
+            )
         }
         failure {
-            echo 'Pipeline failed!'
+            slackSend(
+                channel: env.SLACK_CHANNEL,
+                color: 'danger',
+                message: "❌ FAILURE: Job ${env.JOB_NAME} - Build ${env.BUILD_NUMBER}\nURL: ${env.BUILD_URL}"
+            )
         }
         always {
-            echo 'Cleaning up workspace...'
-            cleanWs() // Clean the workspace after the build
+            cleanWs()
         }
     }
 }
