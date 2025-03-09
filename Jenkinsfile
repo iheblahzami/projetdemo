@@ -13,6 +13,7 @@ pipeline {
         // Slack Configuration
         SLACK_CHANNEL = '#testdemo'  // Add '#' prefix for Slack channels
         SLACK_CREDENTIALS_ID = 'slack-webhook-credentials'  // Name of your Slack webhook credential in Jenkins
+        EMAIL_RECIPIENTS = 'siiheb64@gmail.com' // Recipient emails
     }
 
     stages {
