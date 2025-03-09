@@ -1,8 +1,11 @@
 Local CI/CD Pipeline
-📌 Project Overview
+
+📌 Project Overview :
+
 This project demonstrates the automation of building, testing, and deploying a full-stack web application using a local CI/CD pipeline. The goal is to streamline the development process by integrating continuous integration and continuous deployment practices.
 
-🚀 Tech Stack
+🚀 Tech Stack : 
+
 Frontend: Angular
 Backend: Spring Boot
 CI/CD Tools: Jenkins or GitHub Actions
@@ -13,7 +16,9 @@ Automates the build, test, and deployment process.
 Runs unit tests for both frontend and backend.
 Packages the application into a Docker container using Docker Compose.
 Sends build status notifications via email and Slack.
-📜 Steps
+
+📜 Steps :
+
 Develop a Simple Web Application
 
 Create a frontend using Angular.
