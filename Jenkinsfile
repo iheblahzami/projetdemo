@@ -117,23 +117,29 @@ pipeline {
         }
     }
 
-    post {
-        success {
-            slackSend(
-                channel: env.SLACK_CHANNEL,
-                color: 'good',
-                message: "✅ SUCCESS: Job ${env.JOB_NAME} - Build ${env.BUILD_NUMBER}\nURL: ${env.BUILD_URL}"
-            )
-        }
-        failure {
-            slackSend(
-                channel: env.SLACK_CHANNEL,
-                color: 'danger',
-                message: "❌ FAILURE: Job ${env.JOB_NAME} - Build ${env.BUILD_NUMBER}\nURL: ${env.BUILD_URL}"
-            )
-        }
-        always {
-            cleanWs()
-        }
+post {
+    success {
+        slackSend(
+            channel: env.SLACK_CHANNEL,
+            color: 'good',
+            message: "✅ SUCCESS: Job ${env.JOB_NAME} - Build ${env.BUILD_NUMBER}"
+        )
+        mail(
+            to: env.EMAIL_RECIPIENTS,
+            subject: "✅ SUCCESS: ${env.JOB_NAME}",
+            body: "Build succeeded: ${env.BUILD_URL}"
+        )
+    }
+    failure {
+        slackSend(
+            channel: env.SLACK_CHANNEL,
+            color: 'danger',
+            message: "❌ FAILURE: Job ${env.JOB_NAME} - Build ${env.BUILD_NUMBER}"
+        )
+        mail(
+            to: env.EMAIL_RECIPIENTS,
+            subject: "❌ FAILURE: ${env.JOB_NAME}",
+            body: "Build failed: ${env.BUILD_URL}"
+        )
     }
 }
