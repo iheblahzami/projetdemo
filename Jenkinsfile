@@ -10,7 +10,7 @@ pipeline {
         BACKEND_DIR = 'back'
         CHROME_BIN = '/usr/bin/chromium-browser'
         DOCKER_BUILDKIT = '1'
-        SLACK_CHANNEL = 'testdemo' // e.g., #build-notifications
+        SLACK_CHANNEL = '#testdemo' // e.g., #build-notifications
         SLACK_CREDENTIALS_ID = 'testdemo' // Name of your Slack credential in Jenkins
     }
 
@@ -121,7 +121,7 @@ stage('Run Unit Tests') {
         }
     }
 
-   post {
+    post {
         success {
             slackSend(
                 channel: env.SLACK_CHANNEL,
