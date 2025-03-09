@@ -11,7 +11,7 @@ pipeline {
         CHROME_BIN = '/usr/bin/chromium-browser'
         DOCKER_BUILDKIT = '1'
         SLACK_CHANNEL = '#testdemo' // e.g., #build-notifications
-        SLACK_CREDENTIALS_ID = 'testdemo' // Name of your Slack credential in Jenkins
+        SLACK_CREDENTIALS_ID = 'slack-webhook-credentials' // Name of your Slack credential in Jenkins
     }
 
     stages {
