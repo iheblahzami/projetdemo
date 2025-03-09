@@ -10,8 +10,9 @@ pipeline {
         BACKEND_DIR = 'back'
         CHROME_BIN = '/usr/bin/chromium-browser'
         DOCKER_BUILDKIT = '1'
-        SLACK_CHANNEL = '#testdemo' // e.g., #build-notifications
-        SLACK_CREDENTIALS_ID = 'slack-webhook-credentials' // Name of your Slack credential in Jenkins
+        // Slack Configuration
+        SLACK_CHANNEL = '#testdemo'  // Add '#' prefix for Slack channels
+        SLACK_CREDENTIALS_ID = 'slack-webhook-credentials'  // Name of your Slack webhook credential in Jenkins
     }
 
     stages {
@@ -26,13 +27,13 @@ pipeline {
                 }
             }
         }
-        // Start MySQL Database
+
         stage('Start MySQL Database') {
             steps {
                 script {
                     try {
-                        sh 'docker-compose up -d mysql' // Start the MySQL container
-                        sh 'sleep 10' // Wait for the database to initialize
+                        sh 'docker-compose up -d mysql'
+                        sh 'sleep 10'
                     } catch (Exception e) {
                         error "Failed to start MySQL database: ${e.message}"
                     }
@@ -45,7 +46,7 @@ pipeline {
                 script {
                     dir(FRONTEND_DIR) {
                         try {
-                            sh 'npm install --cache .npm' // Caching dependencies
+                            sh 'npm install --cache .npm'
                             sh 'npm run build -- --configuration production'
                         } catch (Exception e) {
                             error "Frontend build failed: ${e.message}"
@@ -70,28 +71,25 @@ pipeline {
             }
         }
 
-stage('Run Unit Tests') {
-    environment {
-        CHROME_BIN = '/usr/bin/chromium-browser' // Explicitly set Chrome binary for Jenkins
-    }
-    steps {
-        script {
-            try {
-                sh 'echo "Using Chrome binary at: $CHROME_BIN"'
-                dir(FRONTEND_DIR) {
-                    sh 'npm test -- --watch=false --browsers=ChromeHeadless'
+        stage('Run Unit Tests') {
+            environment {
+                CHROME_BIN = '/usr/bin/chromium-browser'  // Optional: Redundant since it’s already in global `environment`
+            }
+            steps {
+                script {
+                    try {
+                        dir(FRONTEND_DIR) {
+                            sh 'npm test -- --watch=false --browsers=ChromeHeadless'
+                        }
+                        dir(BACKEND_DIR) {
+                            sh './mvnw test'
+                        }
+                    } catch (Exception e) {
+                        error "Unit tests failed: ${e.message}"
+                    }
                 }
-                dir(BACKEND_DIR) {
-                    sh './mvnw test'
-                }
-            } catch (Exception e) {
-                error "Unit tests failed: ${e.message}"
             }
         }
-    }
-}
-
-
 
         stage('Docker Compose Build and Run') {
             steps {
@@ -105,8 +103,6 @@ stage('Run Unit Tests') {
                 }
             }
         }
-
-
 
         stage('Stop Docker Compose') {
             steps {
