@@ -8,7 +8,7 @@ This project demonstrates the automation of building, testing, and deploying a f
 
 Frontend: Angular
 Backend: Spring Boot
-CI/CD Tools: Jenkins or GitHub Actions
+CI/CD Tools: Jenkins 
 Containerization: Docker, Docker Compose
 Notifications: Email, Slack
 🔧 Features
